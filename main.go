@@ -1,8 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -20,15 +20,15 @@ type address struct {
 	Street     string `json:"street"`
 }
 
-func fetchFromViaCep(cep int) any {
+func fetchFromViaCep(cep int) []byte {
 	var cepToString string = strconv.Itoa(cep)
 	response, e := http.Get("http://viacep.com.br/ws/" + cepToString + "/json/")
-	datasFromAPI := json.NewDecoder(response.Body)
+	datasFromAPI, e := ioutil.ReadAll(response.Body)
 
 	if e != nil {
 		fmt.Println(e.Error())
 	}
-	return datasFromAPI.
+	return datasFromAPI
 }
 
 func fetchAddress(context *gin.Context) {
